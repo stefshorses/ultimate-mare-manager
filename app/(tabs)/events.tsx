@@ -1,4 +1,4 @@
-import { useGetUpcomingEvents, getGetUpcomingEventsQueryKey } from "@workspace/api-client-react";
+import { useGetUpcomingEvents, getGetUpcomingEventsQueryKey } from "../../api-client";
 import { ActivityIndicator, FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
