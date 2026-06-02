@@ -7,7 +7,7 @@ import {
 } from "@expo-google-fonts/dm-sans";
 import { Rye_400Regular } from "@expo-google-fonts/rye";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { setBaseUrl } from "@workspace/api-client-react";
+import { setBaseUrl } from "../api-client";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
