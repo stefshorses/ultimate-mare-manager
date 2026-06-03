@@ -8,7 +8,7 @@ import {
   getListMaresQueryKey,
   getGetDashboardSummaryQueryKey,
   getGetUpcomingEventsQueryKey,
-} from "@workspace/api-client-react";
+} from "../api-client";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
