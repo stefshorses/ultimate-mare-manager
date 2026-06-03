@@ -9,7 +9,7 @@ import {
   getListMaresQueryKey,
   getGetMareQueryKey,
   getGetDashboardSummaryQueryKey,
-} from "@workspace/api-client-react";
+} from "../api-client";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
