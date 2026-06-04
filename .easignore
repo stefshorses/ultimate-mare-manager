@@ -1,0 +1,3 @@
+# Exclude lock files - EAS should use npm install (fresh), not npm ci
+package-lock.json
+yarn.lock
