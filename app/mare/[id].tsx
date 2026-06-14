@@ -11,12 +11,11 @@ import {
   getListMaresQueryKey,
   getGetDashboardSummaryQueryKey,
   getGetUpcomingEventsQueryKey,
-} from "../../api-client";
+} from "@workspace/api-client-react";
 import React, { useState } from "react";
 import {
   Alert,
   ActivityIndicator,
-  Dimensions,
   Image as RNImage,
   Platform,
   RefreshControl,
@@ -28,6 +27,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
+import { useLayout } from "@/hooks/useLayout";
 import { StatusBadge } from "@/components/StatusBadge";
 import { BreedingRecordCard } from "@/components/BreedingRecordCard";
 import { MareFormModal } from "@/components/MareFormModal";
@@ -70,6 +70,7 @@ export default function MareDetailScreen() {
   const queryClient = useQueryClient();
   const deleteMare = useDeleteMare();
   const deleteRecord = useDeleteBreedingRecord();
+  const { screenWidth, contentWidth, horizontalPad } = useLayout();
 
   const [showEditMare, setShowEditMare] = useState(false);
   const [showAddRecord, setShowAddRecord] = useState(false);
@@ -116,8 +117,7 @@ export default function MareDetailScreen() {
 
   const topPad = Platform.OS === "web" ? 44 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const screenWidth = Dimensions.get("window").width;
-  const imageHeight = Math.round(screenWidth / IMAGE_ASPECT);
+  const imageHeight = Math.round(contentWidth / IMAGE_ASPECT);
 
   const name = mare?.registeredName || mare?.stableName || "Unnamed Mare";
   const nickname = mare?.registeredName && mare?.stableName ? `"${mare.stableName}"` : null;
@@ -152,7 +152,7 @@ export default function MareDetailScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
 
-      {/* Banner — identical height/structure to AppBanner on the home screen */}
+      {/* Banner — full-width gradient, image capped to content width */}
       <View>
         <LinearGradient
           colors={WOOD_GRAIN}
@@ -168,13 +168,13 @@ export default function MareDetailScreen() {
           </View>
           <RNImage
             source={mareFoal}
-            style={{ width: screenWidth, height: imageHeight }}
+            style={{ width: contentWidth, height: imageHeight }}
             resizeMode="contain"
           />
         </LinearGradient>
 
         {/* Nav buttons float absolutely — zero impact on banner height */}
-        <View style={[styles.navRow, { top: topPad }]}>
+        <View style={[styles.navRow, { top: topPad, left: horizontalPad - 10, right: horizontalPad - 10 }]}>
           <TouchableOpacity testID="back-button" onPress={() => router.back()} style={styles.navBtn}>
             <Ionicons name="chevron-back" size={26} color="rgba(255,255,255,0.92)" />
           </TouchableOpacity>
@@ -190,7 +190,7 @@ export default function MareDetailScreen() {
       </View>
 
       {/* Mare identity strip below the banner */}
-      <View style={[styles.heroSection, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
+      <View style={[styles.heroSection, { backgroundColor: colors.card, borderBottomColor: colors.border, paddingHorizontal: horizontalPad }]}>
         <Image
           source={photoUri ? { uri: photoUri } : require("../../assets/images/icon.png")}
           style={[styles.heroPhoto, { backgroundColor: colors.muted }]}
@@ -205,7 +205,7 @@ export default function MareDetailScreen() {
 
       <ScrollView
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={colors.primary} />}
-        contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 80 }]}
+        contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 80, paddingHorizontal: horizontalPad }]}
       >
         <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mare Info</Text>
@@ -291,35 +291,32 @@ const styles = StyleSheet.create({
   backLink: { marginTop: 12 },
   backLinkText: { fontSize: 15, fontFamily: "DMSans_500Medium" },
 
-  /* Banner */
-  banner: { width: "100%", overflow: "hidden" },
+  banner: { width: "100%", overflow: "hidden", alignItems: "center" },
   grainLine: { position: "absolute", left: 0, right: 0, height: 1, backgroundColor: "rgba(0,0,0,0.15)" },
-  navRow: { position: "absolute", left: 0, right: 0, flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 4 },
+  navRow: { position: "absolute", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   navBtn: { padding: 10 },
   navActions: { flexDirection: "row" },
 
-  /* Hero identity */
-  heroSection: { flexDirection: "row", padding: 16, gap: 14, alignItems: "center", borderBottomWidth: 1 },
+  heroSection: { flexDirection: "row", paddingVertical: 16, gap: 14, alignItems: "center", borderBottomWidth: 1 },
   heroPhoto: { width: 72, height: 72, borderRadius: 36 },
   heroInfo: { flex: 1, gap: 5 },
   mareName: { fontSize: 22, fontFamily: "Rye_400Regular", lineHeight: 28 },
   nickname: { fontSize: 14, fontFamily: "DMSans_400Regular", marginTop: -2 },
 
-  /* Content */
   scroll: { gap: 0 },
-  section: { margin: 16, marginBottom: 0, borderRadius: 12, borderWidth: 1, padding: 16, gap: 10 },
+  section: { marginTop: 16, borderRadius: 12, borderWidth: 1, padding: 16, gap: 10 },
   sectionTitle: { fontSize: 15, fontFamily: "Rye_400Regular", marginBottom: 2 },
   infoRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   infoLabel: { fontSize: 13, fontFamily: "DMSans_400Regular" },
   infoValue: { fontSize: 13, fontFamily: "DMSans_600SemiBold" },
   noInfo: { fontSize: 13, fontFamily: "DMSans_400Regular", textAlign: "center", paddingVertical: 4 },
   notesText: { fontSize: 14, fontFamily: "DMSans_400Regular", lineHeight: 21 },
-  recordsHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 16, marginTop: 20, marginBottom: 4 },
+  recordsHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 20, marginBottom: 4 },
   recordsTitle: { fontSize: 15, fontFamily: "Rye_400Regular" },
   addRecordBtn: { flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8 },
   addRecordText: { fontSize: 13, fontFamily: "DMSans_600SemiBold" },
-  records: { paddingHorizontal: 16, gap: 6 },
-  emptyRecords: { margin: 16, borderRadius: 12, borderWidth: 1, padding: 32, alignItems: "center", gap: 8 },
+  records: { gap: 6 },
+  emptyRecords: { borderRadius: 12, borderWidth: 1, padding: 32, alignItems: "center", gap: 8, marginTop: 4 },
   emptyText: { fontSize: 14, fontFamily: "DMSans_500Medium" },
   emptyHint: { fontSize: 12, fontFamily: "DMSans_400Regular", textAlign: "center" },
 });

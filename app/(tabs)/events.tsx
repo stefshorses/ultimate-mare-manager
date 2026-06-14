@@ -1,23 +1,26 @@
-import { useGetUpcomingEvents, getGetUpcomingEventsQueryKey } from "../../api-client";
+import { useGetUpcomingEvents, getGetUpcomingEventsQueryKey } from "@workspace/api-client-react";
 import { ActivityIndicator, FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
+import { useLayout } from "@/hooks/useLayout";
 import { AppBanner } from "@/components/AppBanner";
 import { EventItem } from "@/components/EventItem";
 
 export default function EventsScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { screenWidth, horizontalPad } = useLayout();
   const { data: events, isLoading, refetch, isRefetching } = useGetUpcomingEvents({
     query: { queryKey: getGetUpcomingEventsQueryKey() },
   });
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const listHPad = Math.max(0, (screenWidth - 560) / 2);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <AppBanner />
-      <View style={[styles.header, { borderBottomColor: colors.border }]}>
+      <View style={[styles.header, { borderBottomColor: colors.border, paddingHorizontal: horizontalPad }]}>
         <Text style={[styles.title, { color: colors.foreground }]}>Upcoming Events</Text>
         <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>Next 60 days</Text>
       </View>
@@ -32,7 +35,7 @@ export default function EventsScreen() {
           keyExtractor={(item) => `${item.mareId}-${item.eventType}-${item.eventDate}`}
           renderItem={({ item }) => <EventItem event={item} />}
           scrollEnabled={!!(events && events.length > 0)}
-          contentContainerStyle={[styles.list, { paddingBottom: bottomPad + 16 }]}
+          contentContainerStyle={[styles.list, { paddingBottom: bottomPad + 16, paddingHorizontal: listHPad }]}
           refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={colors.primary} />}
           ListEmptyComponent={
             <View style={styles.empty}>
@@ -49,7 +52,7 @@ export default function EventsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16, borderBottomWidth: 1 },
+  header: { paddingTop: 12, paddingBottom: 16, borderBottomWidth: 1 },
   title: { fontSize: 28, fontFamily: "DMSans_700Bold" },
   subtitle: { fontSize: 14, fontFamily: "DMSans_400Regular", marginTop: 2 },
   centered: { flex: 1, alignItems: "center", justifyContent: "center" },

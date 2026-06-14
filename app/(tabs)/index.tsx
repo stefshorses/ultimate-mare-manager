@@ -4,7 +4,7 @@ import {
   useGetDashboardSummary,
   getListMaresQueryKey,
   getGetDashboardSummaryQueryKey,
-} from "../../api-client";
+} from "@workspace/api-client-react";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -19,6 +19,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
+import { useLayout } from "@/hooks/useLayout";
 import { AppBanner } from "@/components/AppBanner";
 import { MareCard } from "@/components/MareCard";
 import { MareFormModal } from "@/components/MareFormModal";
@@ -39,6 +40,7 @@ function StatPill({ label, value, color }: { label: string; value: number; color
 export default function HerdScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { screenWidth, horizontalPad } = useLayout();
   const [search, setSearch] = useState("");
   const [showAddMare, setShowAddMare] = useState(false);
   const { isPremium, setShowPaywall } = useSubscription();
@@ -73,11 +75,12 @@ export default function HerdScreen() {
   });
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const listHPad = Math.max(0, (screenWidth - 560) / 2);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <AppBanner />
-      <View style={[styles.header, { borderBottomColor: colors.border }]}>
+      <View style={[styles.header, { borderBottomColor: colors.border, paddingHorizontal: horizontalPad }]}>
         <View style={styles.headerTop}>
           <View style={styles.appTitle}>
             <Text style={[styles.titleThe, { color: colors.primary }]}>THE</Text>
@@ -142,7 +145,7 @@ export default function HerdScreen() {
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => <MareCard mare={item} />}
           scrollEnabled={!!(filtered.length > 0)}
-          contentContainerStyle={[styles.list, { paddingBottom: bottomPad + 16 }]}
+          contentContainerStyle={[styles.list, { paddingBottom: bottomPad + 16, paddingHorizontal: listHPad }]}
           refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={colors.primary} />}
           ListEmptyComponent={
             <View style={styles.empty}>
@@ -165,7 +168,7 @@ export default function HerdScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 12, borderBottomWidth: 1, gap: 12 },
+  header: { paddingTop: 12, paddingBottom: 12, borderBottomWidth: 1, gap: 12 },
   headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   appTitle: { flexDirection: "column", gap: 0 },
   titleThe: { fontSize: 10, fontFamily: "Rye_400Regular", letterSpacing: 6 },

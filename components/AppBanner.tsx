@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Dimensions, Image, Platform, StyleSheet, View } from "react-native";
+import { Image, Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useLayout } from "@/hooks/useLayout";
 
 const WOOD_GRAIN: string[] = [
   "#2c1408",
@@ -18,16 +19,15 @@ const WOOD_GRAIN: string[] = [
 
 const WOOD_LOCATIONS: number[] = [0, 0.07, 0.17, 0.27, 0.37, 0.48, 0.59, 0.70, 0.80, 0.91, 1];
 
-// Image is ~1070 x 465 → aspect ratio ≈ 2.3 : 1
 const IMAGE_ASPECT = 1070 / 465;
 
 const mareFoal = require("../assets/images/mare_foal_landscape.png");
 
 export function AppBanner() {
   const insets = useSafeAreaInsets();
+  const { contentWidth } = useLayout();
   const topPad = Platform.OS === "web" ? 44 : insets.top;
-  const screenWidth = Dimensions.get("window").width;
-  const imageHeight = Math.round(screenWidth / IMAGE_ASPECT);
+  const imageHeight = Math.round(contentWidth / IMAGE_ASPECT);
 
   return (
     <LinearGradient
@@ -45,7 +45,7 @@ export function AppBanner() {
 
       <Image
         source={mareFoal}
-        style={[styles.image, { width: screenWidth, height: imageHeight }]}
+        style={[styles.image, { width: contentWidth, height: imageHeight }]}
         resizeMode="contain"
       />
     </LinearGradient>
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
   banner: {
     width: "100%",
     overflow: "hidden",
+    alignItems: "center",
   },
   grainLines: {
     ...StyleSheet.absoluteFillObject,
