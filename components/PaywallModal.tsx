@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
   Image,
   Modal,
   StyleSheet,
@@ -15,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useColors } from "@/hooks/useColors";
+import { useLayout } from "@/hooks/useLayout";
 
 const WOOD_GRAIN: string[] = [
   "#2c1408","#59301a","#7a4828","#59301a","#3a1c0a",
@@ -37,8 +37,8 @@ export function PaywallModal() {
   const { showPaywall, setShowPaywall, purchase, restore, currentOffering, isLoading } = useSubscription();
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const screenWidth = Dimensions.get("window").width;
-  const imageHeight = Math.round(screenWidth / IMAGE_ASPECT);
+  const { contentWidth, horizontalPad } = useLayout();
+  const imageHeight = Math.round(contentWidth / IMAGE_ASPECT);
   const [purchasing, setPurchasing] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
@@ -93,12 +93,12 @@ export function PaywallModal() {
           </TouchableOpacity>
           <Image
             source={mareFoal}
-            style={{ width: screenWidth, height: imageHeight }}
+            style={{ width: contentWidth, height: imageHeight }}
             resizeMode="contain"
           />
         </LinearGradient>
 
-        <View style={styles.content}>
+        <View style={[styles.content, { paddingHorizontal: horizontalPad }]}>
           <Text style={[styles.heading, { color: colors.foreground }]}>THE ULTIMATE</Text>
           <Text style={[styles.subheading, { color: colors.primary }]}>Mare Manager</Text>
           <Text style={[styles.body, { color: colors.mutedForeground }]}>
@@ -115,7 +115,7 @@ export function PaywallModal() {
           </View>
         </View>
 
-        <View style={[styles.footer, { paddingBottom: insets.bottom + 16 }]}>
+        <View style={[styles.footer, { paddingBottom: insets.bottom + 16, paddingHorizontal: horizontalPad }]}>
           {isLoading ? (
             <ActivityIndicator color={colors.primary} />
           ) : (
@@ -163,7 +163,7 @@ export function PaywallModal() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  banner: { width: "100%", overflow: "hidden" },
+  banner: { width: "100%", overflow: "hidden", alignItems: "center" },
   closeBtn: {
     position: "absolute",
     right: 16,
@@ -172,14 +172,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 4,
   },
-  content: { flex: 1, paddingHorizontal: 24, paddingTop: 20, gap: 4 },
+  content: { flex: 1, paddingTop: 20, gap: 4 },
   heading: { fontSize: 28, fontFamily: "Rye_400Regular", letterSpacing: 2 },
   subheading: { fontSize: 18, fontFamily: "Rye_400Regular", letterSpacing: 2, marginBottom: 8 },
   body: { fontSize: 14, fontFamily: "DMSans_400Regular", lineHeight: 20, marginBottom: 12 },
   features: { gap: 10 },
   featureRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   featureText: { fontSize: 15, fontFamily: "DMSans_500Medium" },
-  footer: { paddingHorizontal: 24, gap: 10 },
+  footer: { gap: 10 },
   purchaseBtn: {
     borderRadius: 14,
     paddingVertical: 16,
