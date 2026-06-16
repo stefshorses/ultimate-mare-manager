@@ -9,7 +9,7 @@ import {
   getListMaresQueryKey,
   getGetMareQueryKey,
   getGetDashboardSummaryQueryKey,
-} from "../api-client";
+} from "@workspace/api-client-react";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -102,7 +102,7 @@ export function MareFormModal({ visible, onClose, initialValues, isEditing }: Pr
       const fileResp = await fetch(asset.uri);
       const blob = await fileResp.blob();
       await fetch(uploadUrl, { method: "PUT", body: blob, headers: { "Content-Type": "image/jpeg" } });
-      setPhotoUrl(`/api/storage/objects/${objectPath}`);
+      setPhotoUrl(`/api/storage${objectPath}`);
     } catch {
       Alert.alert("Upload failed", "Could not upload photo. Please try again.");
     } finally {
