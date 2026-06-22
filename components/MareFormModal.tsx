@@ -99,11 +99,22 @@ export function MareFormModal({ visible, onClose, initialValues, isEditing }: Pr
       const { uploadUrl, objectPath } = await requestUploadUrl.mutateAsync({
         data: { filename, contentType: "image/jpeg", size: asset.fileSize ?? 500000 },
       });
-      const fileResp = await fetch(asset.uri);
-      const blob = await fileResp.blob();
-      await fetch(uploadUrl, { method: "PUT", body: blob, headers: { "Content-Type": "image/jpeg" } });
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", uploadUrl);
+        xhr.setRequestHeader("Content-Type", "image/jpeg");
+        xhr.timeout = 60000;
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) resolve();
+          else reject(new Error(`Upload failed: ${xhr.status}`));
+        };
+        xhr.onerror = () => reject(new Error("Network error during upload"));
+        xhr.ontimeout = () => reject(new Error("Upload timed out"));
+        xhr.send({ uri: asset.uri, type: "image/jpeg", name: filename } as any);
+      });
       setPhotoUrl(`/api/storage${objectPath}`);
-    } catch {
+    } catch (e) {
+      console.error("Photo upload error:", e);
       Alert.alert("Upload failed", "Could not upload photo. Please try again.");
     } finally {
       setUploading(false);

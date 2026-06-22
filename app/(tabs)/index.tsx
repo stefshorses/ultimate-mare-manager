@@ -43,7 +43,7 @@ export default function HerdScreen() {
   const { screenWidth, horizontalPad } = useLayout();
   const [search, setSearch] = useState("");
   const [showAddMare, setShowAddMare] = useState(false);
-  const { isPremium, setShowPaywall } = useSubscription();
+  const { isPremium, isLoading: rcLoading, setShowPaywall } = useSubscription();
 
   const { data: mares, isLoading, refetch, isRefetching } = useListMares({
     query: { queryKey: getListMaresQueryKey() },
@@ -53,7 +53,7 @@ export default function HerdScreen() {
   });
 
   const mareCount = mares?.length ?? 0;
-  const atFreeLimit = !isPremium && mareCount >= FREE_MARE_LIMIT;
+  const atFreeLimit = !rcLoading && !isPremium && mareCount >= FREE_MARE_LIMIT;
 
   const handleAddMare = () => {
     if (atFreeLimit) {
