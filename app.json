@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ultimate Mare Manager",
     "slug": "mare-tracker-mobile",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "mare-tracker-mobile",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ultmaremanager.app",
-      "buildNumber": "3",
+      "buildNumber": "1",
       "infoPlist": {
         "NSCameraUsageDescription": "Used to take photos of your mares.",
         "NSPhotoLibraryUsageDescription": "Used to select photos of your mares."
