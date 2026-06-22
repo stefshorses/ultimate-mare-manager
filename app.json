@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ultmaremanager.app",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "infoPlist": {
         "NSCameraUsageDescription": "Used to take photos of your mares.",
         "NSPhotoLibraryUsageDescription": "Used to select photos of your mares."
