@@ -1,0 +1,53 @@
+{
+    "expo": {
+      "name": "Ultimate Mare Manager",
+      "slug": "mare-tracker-mobile",
+      "version": "1.0.0",
+      "orientation": "portrait",
+      "icon": "./assets/images/icon.png",
+      "scheme": "mare-tracker-mobile",
+      "userInterfaceStyle": "automatic",
+      "newArchEnabled": true,
+      "splash": {
+        "image": "./assets/images/icon.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#eae4d6"
+      },
+      "ios": {
+        "supportsTablet": true,
+        "bundleIdentifier": "com.ultmaremanager.app",
+        "buildNumber": "4",
+        "infoPlist": {
+          "NSCameraUsageDescription": "Used to take photos of your mares.",
+          "NSPhotoLibraryUsageDescription": "Used to select photos of your mares."
+        }
+      },
+      "android": {
+        "package": "com.ultmaremanager.app"
+      },
+      "web": {
+        "favicon": "./assets/images/icon.png"
+      },
+      "plugins": [
+        [
+          "expo-router",
+          {
+            "origin": "https://replit.com/"
+          }
+        ],
+        "expo-font",
+        "expo-web-browser"
+      ],
+      "experiments": {
+        "typedRoutes": true,
+        "reactCompiler": true
+      },
+      "extra": {
+        "eas": {
+          "projectId": "56d112be-c21c-4341-be22-f5ab4da3bafe"
+        }
+      },
+      "owner": "stefshorses"
+    }
+    }
+    
